@@ -131,7 +131,7 @@ h3[id],h2[id]{scroll-margin-top:110px}
 .two ul{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;color:var(--text);font-size:15px;line-height:1.45}
 .two li b{color:#EAF0FB;font-weight:700}
 
-/* contact form (FormSubmit sends each message to my inbox), folded until opened */
+/* contact form (Web3Forms sends each message to my inbox), folded until opened */
 .reach{background:var(--panel);border:1px solid var(--line);border-radius:16px;transition:border-color .15s}
 .reach[open]{border-color:rgba(140,160,240,.65)}
 .reach summary{display:flex;align-items:center;gap:12px;min-height:44px;padding:16px 22px;cursor:pointer;list-style:none;font-weight:600;color:#EAF0FB}
@@ -355,11 +355,12 @@ dialog::backdrop{background:rgba(5,8,20,.82);backdrop-filter:blur(6px)}
   <section class="sec" aria-labelledby="contact-h">
     <details class="reach">
     <summary><h2 id="contact-h">Get In Touch</h2></summary>
-    <form class="contact" action="https://formsubmit.co/pinkpython2022+portfolio@gmail.com" method="POST">
-      <input type="hidden" name="_subject" value="Portfolio enquiry">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <form class="contact" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="235bf1c6-f8f4-4e21-b59f-d8c460ab471f">
+      <input type="hidden" name="subject" value="Portfolio enquiry">
+      <input type="hidden" name="from_name" value="Portfolio contact form">
+      <input type="hidden" name="redirect" value="https://kettypoinen.github.io/portfolio/thanks.html">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label>Name<input type="text" name="name" required autocomplete="name"></label>
       <label>Email<input type="email" name="email" required autocomplete="email"></label>
       <label class="full">Firm (optional)<input type="text" name="firm" autocomplete="organization"></label>
@@ -471,26 +472,27 @@ $('lb-prev').onclick=()=>openCard(c-1);$('lb-next').onclick=()=>openCard(c+1);
 lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
 lb.addEventListener('keydown',e=>{if(e.key==='ArrowRight')openCard(c+1);if(e.key==='ArrowLeft')openCard(c-1)});
 
-// Contact form: sent in the background to FormSubmit, then the visitor goes to my thank-you page without waiting for FormSubmit's slow reply.
+// Contact form: sent in the background to Web3Forms, then the visitor goes to my thank-you page.
 // The sender's email goes in the subject line, and the button locks while sending, so one click sends one message.
 const form=document.querySelector('.contact'),send=form.querySelector('button'),status=document.getElementById('form-status');
 const say=(msg,ok)=>{status.textContent=msg;status.className='form-status '+(ok?'ok':'err');status.hidden=false};
 form.addEventListener('submit',async e=>{
   e.preventDefault();
   if(form.dataset.sent)return;
-  if(form.elements._honey.value)return;            // filled only by bots
+  if(form.elements.botcheck.checked)return;        // ticked only by bots
   form.dataset.sent='1';send.disabled=true;send.textContent='Sending\u2026';status.hidden=true;
   const data=Object.fromEntries(new FormData(form));
-  data._subject='Portfolio enquiry - '+form.elements.email.value.trim();
-  // FormSubmit delivers quickly but can take a long time to answer, so the page does not wait for its reply:
-  // a quick, explicit refusal shows an error; otherwise the visitor is thanked after a few seconds while sending finishes.
+  data.subject='Portfolio enquiry - '+form.elements.email.value.trim();
+  delete data.redirect;delete data.botcheck;
+  // Web3Forms normally answers within a second or two; if it is ever slow, the visitor is thanked after 10 seconds
+  // while sending finishes in the background, and only a clear refusal shows an error.
   const fail=()=>{clearTimeout(thanks);delete form.dataset.sent;send.disabled=false;send.textContent='Send message';
     say('Sorry, your message could not be sent just now. Please try again in a moment, or reach me on LinkedIn.',false)};
   const done=()=>{form.hidden=true;location.href='thanks.html'};   // my own branded thank-you page
-  const thanks=setTimeout(done,6000);
-  fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
+  const thanks=setTimeout(done,10000);
+  fetch(form.action,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
     .then(async r=>{const j=await r.json().catch(()=>({}));
-      if(r.ok&&String(j.success)==='true'){clearTimeout(thanks);if(!form.hidden)done()}
+      if(r.ok&&j.success===true){clearTimeout(thanks);if(!form.hidden)done()}
       else if(!form.hidden)fail()})
     .catch(()=>{if(!form.hidden)fail()});
 });
