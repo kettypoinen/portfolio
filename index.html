@@ -360,7 +360,7 @@ dialog::backdrop{background:rgba(5,8,20,.82);backdrop-filter:blur(6px)}
       <label>Email<input type="email" name="email" required autocomplete="email"></label>
       <label class="full">Firm (optional)<input type="text" name="firm" autocomplete="organization"></label>
       <label class="full">Message<textarea name="message" rows="5" required></textarea></label>
-      <button type="submit">Send message</button>
+      <button type="submit" autocomplete="off">Send message</button>
     </form>
     </details>
   </section>
@@ -476,8 +476,8 @@ form.addEventListener('submit',e=>{
   if(/^https?:$/.test(location.protocol)&&!form.elements._next){const n=document.createElement('input');n.type='hidden';n.name='_next';n.value=new URL('thanks.html',location.href).href;form.append(n)}
   send.disabled=true;send.textContent='Sending…';
 });
-// Coming back with the browser's Back button: unlock the form again
-addEventListener('pageshow',e=>{if(e.persisted){delete form.dataset.sent;send.disabled=false;send.textContent='Send message'}});
+// Whenever the page is shown again (Back button, restored tab, reload), unlock the form
+addEventListener('pageshow',()=>{delete form.dataset.sent;send.disabled=false;send.textContent='Send message'});
 </script>
 </body>
 </html>
