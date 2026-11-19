@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 860" width="1000" height="860" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <!-- Drawn from 72_binanceAgent/experiment-log.md (phases 2-6). No account IDs, emails or order IDs. -->
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5B6B8C"/></marker>
+  </defs>
+  <rect width="1000" height="860" fill="#0E1424"/>
+
+  <!-- title -->
+  <text x="40" y="58" font-size="30" font-weight="700" fill="#F2F5F7">What an agent could really do with real money</text>
+  <text x="40" y="92" font-size="19" fill="#9AA6C6">Binance Agent OS, tested phase by phase · confirm-before-execute on every order</text>
+
+  <!-- connection flow -->
+  <g font-size="19">
+    <rect x="40" y="122" width="250" height="96" rx="12" fill="#17213A" stroke="#2C3F5E" stroke-width="2"/>
+    <text x="165" y="162" text-anchor="middle" font-weight="700" font-size="22" fill="#F2F5F7">Claude Code</text>
+    <text x="165" y="192" text-anchor="middle" fill="#9AA6C6">agent, me approving</text>
+
+    <rect x="375" y="122" width="250" height="96" rx="12" fill="#17213A" stroke="#6AA4F8" stroke-width="2"/>
+    <text x="500" y="162" text-anchor="middle" font-weight="700" font-size="22" fill="#F2F5F7">Agent OS MCP</text>
+    <text x="500" y="192" text-anchor="middle" fill="#9AA6C6">OAuth scopes granted</text>
+
+    <rect x="710" y="122" width="250" height="96" rx="12" fill="#17213A" stroke="#2C3F5E" stroke-width="2"/>
+    <text x="835" y="162" text-anchor="middle" font-weight="700" font-size="22" fill="#F2F5F7">Sub-account</text>
+    <text x="835" y="192" text-anchor="middle" fill="#9AA6C6">funded with $5.11 USDT</text>
+
+    <line x1="292" y1="170" x2="371" y2="170" stroke="#5B6B8C" stroke-width="2.5" marker-end="url(#arr)"/>
+    <line x1="627" y1="170" x2="706" y2="170" stroke="#5B6B8C" stroke-width="2.5" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- capability check -->
+  <rect x="40" y="244" width="920" height="76" rx="12" fill="#3ECF8E" fill-opacity="0.10" stroke="#3ECF8E" stroke-width="2"/>
+  <text x="66" y="291" font-size="34" font-weight="800" fill="#3ECF8E">69 tools</text>
+  <text x="232" y="291" font-size="21" fill="#E7ECF7">inventoried · <tspan font-weight="700" fill="#3ECF8E">0</tspan> can create a withdrawal · <tspan font-family="Menlo, Consolas, monospace" font-size="19" fill="#F2F5F7">enableWithdrawals: false</tspan></text>
+
+  <!-- order tests -->
+  <text x="40" y="364" font-size="16" font-weight="700" letter-spacing="2" fill="#9FB2DF">ORDERS TESTED, IN ORDER</text>
+
+  <g font-size="19">
+    <!-- 1 -->
+    <rect x="40" y="380" width="920" height="80" rx="12" fill="#151E33" stroke="#2C3F5E"/>
+    <text x="64" y="412" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#F2F5F7">TESTNET · MARKET BUY BTCUSDT 0.001</text>
+    <text x="64" y="442" fill="#9AA6C6">Run on testnet first, before any real funds were at risk.</text>
+    <rect x="808" y="401" width="132" height="38" rx="19" fill="#3ECF8E" fill-opacity="0.16" stroke="#3ECF8E"/>
+    <text x="874" y="427" text-anchor="middle" font-weight="700" fill="#3ECF8E">FILLED</text>
+
+    <!-- 2 -->
+    <rect x="40" y="472" width="920" height="80" rx="12" fill="#151E33" stroke="#2C3F5E"/>
+    <text x="64" y="504" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#F2F5F7">LIMIT BUY XRPUSDT @ 0.50</text>
+    <text x="64" y="534" fill="#9AA6C6">Below half the market price: the exchange's fat-finger guard refused it.</text>
+    <rect x="808" y="493" width="132" height="38" rx="19" fill="#FF5D5D" fill-opacity="0.16" stroke="#FF5D5D"/>
+    <text x="874" y="519" text-anchor="middle" font-weight="700" fill="#FF5D5D">REJECTED</text>
+
+    <!-- 3 -->
+    <rect x="40" y="564" width="920" height="80" rx="12" fill="#151E33" stroke="#2C3F5E"/>
+    <text x="64" y="596" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#F2F5F7">LIMIT BUY XRPUSDT @ 0.75 GTC</text>
+    <text x="64" y="626" fill="#9AA6C6">Placed, $5.03 locked, then cancelled: funds back in full.</text>
+    <rect x="808" y="585" width="132" height="38" rx="19" fill="#F5B94A" fill-opacity="0.16" stroke="#F5B94A"/>
+    <text x="874" y="611" text-anchor="middle" font-weight="700" fill="#F5B94A">CANCELLED</text>
+
+    <!-- 4 -->
+    <rect x="40" y="656" width="920" height="80" rx="12" fill="#151E33" stroke="#2C3F5E"/>
+    <text x="64" y="688" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#F2F5F7">MARKET BUY XRPUSDT for $5.00</text>
+    <text x="64" y="718" fill="#9AA6C6">3.6 XRP at 1.3708; the 0.1% fee was taken in XRP.</text>
+    <rect x="808" y="677" width="132" height="38" rx="19" fill="#3ECF8E" fill-opacity="0.16" stroke="#3ECF8E"/>
+    <text x="874" y="703" text-anchor="middle" font-weight="700" fill="#3ECF8E">FILLED</text>
+
+    <!-- 5 -->
+    <rect x="40" y="748" width="920" height="80" rx="12" fill="#FF5D5D" fill-opacity="0.07" stroke="#FF5D5D" stroke-opacity="0.6"/>
+    <text x="64" y="780" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#F2F5F7">MARKET SELL 3.5 XRP</text>
+    <text x="64" y="810" fill="#E7ECF7">Worth ~$4.93 after the fee: under the $5 minimum. A dust trap.</text>
+    <rect x="808" y="769" width="132" height="38" rx="19" fill="#FF5D5D" fill-opacity="0.16" stroke="#FF5D5D"/>
+    <text x="874" y="795" text-anchor="middle" font-weight="700" fill="#FF5D5D">REJECTED</text>
+  </g>
+</svg>
