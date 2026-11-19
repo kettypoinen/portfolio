@@ -482,17 +482,17 @@ form.addEventListener('submit',async e=>{
   form.dataset.sent='1';send.disabled=true;send.textContent='Sending\u2026';status.hidden=true;
   const data=Object.fromEntries(new FormData(form));
   data._subject='Portfolio enquiry - '+form.elements.email.value.trim();
-  try{
-    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),45000);
-    const r=await fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data),signal:ctl.signal});
-    clearTimeout(timer);
-    const j=await r.json().catch(()=>({}));
-    if(!r.ok||String(j.success)!=='true')throw new Error('not sent');
-    form.hidden=true;say('Thank you. Your message is on its way to me.',true);
-  }catch(err){
-    delete form.dataset.sent;send.disabled=false;send.textContent='Send message';
-    say('Sorry, your message could not be sent just now. Please try again in a moment, or reach me on LinkedIn.',false);
-  }
+  // FormSubmit delivers quickly but can take a long time to answer, so the page does not wait for its reply:
+  // a quick, explicit refusal shows an error; otherwise the visitor is thanked after a few seconds while sending finishes.
+  const fail=()=>{clearTimeout(thanks);delete form.dataset.sent;send.disabled=false;send.textContent='Send message';
+    say('Sorry, your message could not be sent just now. Please try again in a moment, or reach me on LinkedIn.',false)};
+  const done=()=>{form.hidden=true;say('Thank you. Your message is on its way to me.',true)};
+  const thanks=setTimeout(done,6000);
+  fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
+    .then(async r=>{const j=await r.json().catch(()=>({}));
+      if(r.ok&&String(j.success)==='true'){clearTimeout(thanks);if(!form.hidden)done()}
+      else if(!form.hidden)fail()})
+    .catch(()=>{if(!form.hidden)fail()});
 });
 // Whenever the page is shown again (Back button, restored tab, reload), unlock the form
 addEventListener('pageshow',()=>{delete form.dataset.sent;send.disabled=false;send.textContent='Send message'});
