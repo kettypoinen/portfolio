@@ -1,4 +1,4 @@
-# Ketty Poinen · Portfolio
+# Ketty Poinen · Portfolio · Built with Claude
 
 Fractional AI consultant with a finance edge: AI workflow builds for trading, investment operations and digital assets.
 
