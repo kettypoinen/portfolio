@@ -471,7 +471,7 @@ $('lb-prev').onclick=()=>openCard(c-1);$('lb-next').onclick=()=>openCard(c+1);
 lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
 lb.addEventListener('keydown',e=>{if(e.key==='ArrowRight')openCard(c+1);if(e.key==='ArrowLeft')openCard(c-1)});
 
-// Contact form: sent in the background to FormSubmit, so the visitor stays on the page and sees the result here.
+// Contact form: sent in the background to FormSubmit, then the visitor goes to my thank-you page without waiting for FormSubmit's slow reply.
 // The sender's email goes in the subject line, and the button locks while sending, so one click sends one message.
 const form=document.querySelector('.contact'),send=form.querySelector('button'),status=document.getElementById('form-status');
 const say=(msg,ok)=>{status.textContent=msg;status.className='form-status '+(ok?'ok':'err');status.hidden=false};
@@ -486,7 +486,7 @@ form.addEventListener('submit',async e=>{
   // a quick, explicit refusal shows an error; otherwise the visitor is thanked after a few seconds while sending finishes.
   const fail=()=>{clearTimeout(thanks);delete form.dataset.sent;send.disabled=false;send.textContent='Send message';
     say('Sorry, your message could not be sent just now. Please try again in a moment, or reach me on LinkedIn.',false)};
-  const done=()=>{form.hidden=true;say('Thank you. Your message is on its way to me.',true)};
+  const done=()=>{form.hidden=true;location.href='thanks.html'};   // my own branded thank-you page
   const thanks=setTimeout(done,6000);
   fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
     .then(async r=>{const j=await r.json().catch(()=>({}));
