@@ -151,6 +151,8 @@ h3[id],h2[id]{scroll-margin-top:110px}
 .contact button:hover{filter:brightness(1.15)}
 .contact button:disabled{opacity:.6;cursor:wait;filter:none}
 .contact .hp{display:none}
+.contact .count{margin:-8px 0 0;text-align:right;font-size:12.5px;color:var(--soft);font-variant-numeric:tabular-nums}
+.contact .count.low{color:#F5B94A}
 .contact[hidden],.form-status[hidden]{display:none}
 .form-status{margin:0;padding:18px 22px 22px;font-size:16px;line-height:1.5}
 .form-status.ok{color:#DCE3F4}
@@ -364,7 +366,8 @@ dialog::backdrop{background:rgba(5,8,20,.82);backdrop-filter:blur(6px)}
       <label>Name<input type="text" name="name" required autocomplete="name"></label>
       <label>Email<input type="email" name="email" required autocomplete="email"></label>
       <label class="full">Firm (optional)<input type="text" name="firm" autocomplete="organization"></label>
-      <label class="full">Message<textarea name="message" rows="5" required></textarea></label>
+      <label class="full">Message<textarea name="message" rows="5" required maxlength="5000" aria-describedby="msg-count"></textarea></label>
+      <p class="count full" id="msg-count">5,000 characters left</p>
       <button type="submit" autocomplete="off">Send message</button>
     </form>
     <p id="form-status" class="form-status" role="status" aria-live="polite" hidden></p>
@@ -496,6 +499,10 @@ form.addEventListener('submit',async e=>{
       else if(!form.hidden)fail()})
     .catch(()=>{if(!form.hidden)fail()});
 });
+// Characters left in the message box (capped at 5,000)
+const msg=form.elements.message,count=document.getElementById('msg-count'),MAX=5000;
+const showCount=()=>{const left=MAX-msg.value.length;count.textContent=left.toLocaleString('en')+(left===1?' character':' characters')+' left';count.classList.toggle('low',left<=250)};
+msg.addEventListener('input',showCount);showCount();
 // Whenever the page is shown again (Back button, restored tab, reload), unlock the form
 addEventListener('pageshow',()=>{delete form.dataset.sent;send.disabled=false;send.textContent='Send message'});
 </script>
