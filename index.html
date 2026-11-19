@@ -151,6 +151,10 @@ h3[id],h2[id]{scroll-margin-top:110px}
 .contact button:hover{filter:brightness(1.15)}
 .contact button:disabled{opacity:.6;cursor:wait;filter:none}
 .contact .hp{display:none}
+.contact[hidden],.form-status[hidden]{display:none}
+.form-status{margin:0;padding:18px 22px 22px;font-size:16px;line-height:1.5}
+.form-status.ok{color:#DCE3F4}
+.form-status.err{color:#FFB4B4}
 .foot{border-top:1px solid var(--line);padding-top:24px;text-align:center;display:flex;flex-direction:column;gap:10px}
 .foot .made{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--soft);font-size:13.5px}
 .foot .made a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;color:var(--label)}
@@ -362,6 +366,7 @@ dialog::backdrop{background:rgba(5,8,20,.82);backdrop-filter:blur(6px)}
       <label class="full">Message<textarea name="message" rows="5" required></textarea></label>
       <button type="submit" autocomplete="off">Send message</button>
     </form>
+    <p id="form-status" class="form-status" role="status" aria-live="polite" hidden></p>
     </details>
   </section>
   </main>
@@ -466,15 +471,28 @@ $('lb-prev').onclick=()=>openCard(c-1);$('lb-next').onclick=()=>openCard(c+1);
 lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
 lb.addEventListener('keydown',e=>{if(e.key==='ArrowRight')openCard(c+1);if(e.key==='ArrowLeft')openCard(c-1)});
 
-// Contact form: the sender's email goes in the subject line, and the button locks while FormSubmit responds, so one click sends one message
-const form=document.querySelector('.contact'),send=form.querySelector('button');
-form.addEventListener('submit',e=>{
-  if(form.dataset.sent){e.preventDefault();return}
-  form.dataset.sent='1';
-  form.elements._subject.value='Portfolio enquiry - '+form.elements.email.value.trim();
-  // After sending, FormSubmit returns the visitor to my own thank-you page (needs a web address, so not from a local file)
-  if(/^https?:$/.test(location.protocol)&&!form.elements._next){const n=document.createElement('input');n.type='hidden';n.name='_next';n.value=new URL('thanks.html',location.href).href;form.append(n)}
-  send.disabled=true;send.textContent='Sending…';
+// Contact form: sent in the background to FormSubmit, so the visitor stays on the page and sees the result here.
+// The sender's email goes in the subject line, and the button locks while sending, so one click sends one message.
+const form=document.querySelector('.contact'),send=form.querySelector('button'),status=document.getElementById('form-status');
+const say=(msg,ok)=>{status.textContent=msg;status.className='form-status '+(ok?'ok':'err');status.hidden=false};
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(form.dataset.sent)return;
+  if(form.elements._honey.value)return;            // filled only by bots
+  form.dataset.sent='1';send.disabled=true;send.textContent='Sending\u2026';status.hidden=true;
+  const data=Object.fromEntries(new FormData(form));
+  data._subject='Portfolio enquiry - '+form.elements.email.value.trim();
+  try{
+    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),45000);
+    const r=await fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data),signal:ctl.signal});
+    clearTimeout(timer);
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||String(j.success)!=='true')throw new Error('not sent');
+    form.hidden=true;say('Thank you. Your message is on its way to me.',true);
+  }catch(err){
+    delete form.dataset.sent;send.disabled=false;send.textContent='Send message';
+    say('Sorry, your message could not be sent just now. Please try again in a moment, or reach me on LinkedIn.',false);
+  }
 });
 // Whenever the page is shown again (Back button, restored tab, reload), unlock the form
 addEventListener('pageshow',()=>{delete form.dataset.sent;send.disabled=false;send.textContent='Send message'});
