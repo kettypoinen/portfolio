@@ -19,7 +19,12 @@ main{position:relative;z-index:1;width:100%;max-width:520px;background:var(--pan
 .avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;padding:3px;background:var(--grad)}
 h1{margin:0;font:600 clamp(36px,7vw,46px)/1.1 'Dancing Script',cursive;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 p{margin:0;color:var(--text);max-width:30em}
-.small{color:var(--soft);font-size:14.5px}
+.who{color:var(--fg);font-size:14.5px;margin-top:-4px}
+.who .nm,.who .tt{display:block}
+.who .nm{font-weight:700;font-size:16px}
+.msg{font-style:italic}
+/* on phones: keep the title on one line */
+@media (max-width:560px){.who .tt{white-space:nowrap;font-size:min(14.5px,3.75vw)}main{padding:32px 16px}}
 a.back{margin-top:8px;display:inline-flex;align-items:center;min-height:44px;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,#3A6FD8,#6A4BDE);color:#fff;font:700 15px/1 'Manrope',system-ui,sans-serif;text-decoration:none}
 a.back:hover{filter:brightness(1.15)}
 a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
@@ -28,9 +33,9 @@ a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 <body>
 <main>
   <img class="avatar" src="assets/profile.jpg" alt="Ketty Poinen">
+  <p class="who"><span class="nm">Ketty Poinen</span> <span class="tt">Fractional AI consultant with a finance edge</span></p>
   <h1>Thank You</h1>
-  <p>Your message is on its way to me.</p>
-  <p class="small">Ketty Poinen · Fractional AI consultant with a finance edge</p>
+  <p class="msg">Your message is on its way to me.</p>
   <a class="back" href="index.html">Back to the page</a>
 </main>
 </body>
