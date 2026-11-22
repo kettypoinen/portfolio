@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Dancing+Script:wght@600&display=swap">
-<script>/* theme: saved choice wins, otherwise follow the system setting */(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+<script>/* theme: a ?theme=light or ?theme=dark link wins for this visit, then a saved choice, otherwise the device setting */(function(){var d=document.documentElement,t=null,q=null;try{q=new URLSearchParams(location.search).get('theme')}catch(e){}if(q==='light'||q==='dark'){t=q;try{sessionStorage.setItem('theme-link',q)}catch(e){}}else{try{t=sessionStorage.getItem('theme-link')||localStorage.getItem('theme')}catch(e){}}if(t==='light'||t==='dark')d.setAttribute('data-theme',t)})()</script>
 <style>
 /* Same visual language as the Voltage page: profile header, project cards, numbers and offer. Images live in assets/shots; run films/images.sh to rebuild them. */
 :root{
@@ -447,7 +447,7 @@ const pill=t=>{const s=document.createElement('span');s.className='pill';s.textC
   const sync=()=>{const m=cur();root.setAttribute('data-mode',m);btn.setAttribute('aria-label',m==='light'?'Switch to dark mode':'Switch to light mode')};
   const sys=()=>mq.matches?'light':'dark';
   // A click that lands on the device's own mode clears the saved choice, so the page follows the device again
-  btn.addEventListener('click',()=>{const n=cur()==='light'?'dark':'light';
+  btn.addEventListener('click',()=>{const n=cur()==='light'?'dark':'light';try{sessionStorage.removeItem('theme-link')}catch(e){}
     if(n===sys()){root.removeAttribute('data-theme');try{localStorage.removeItem('theme')}catch(e){}}
     else{root.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}}
     sync()});

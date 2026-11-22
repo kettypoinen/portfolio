@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Manrope:wght@400;600;700&family=Dancing+Script:wght@600&display=swap">
-<script>/* same saved choice as the main page */(function(){try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+<script>/* same as the main page: a theme link used this visit, then a saved choice, otherwise the device setting */(function(){var t=null;try{t=sessionStorage.getItem('theme-link')||localStorage.getItem('theme')}catch(e){}if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)})()</script>
 <style>
 /* Thank-you page after the contact form (index.html sends visitors here). Dark is the base design; light follows the main page's saved choice, then the device setting */
 :root{color-scheme:dark;--fg:#E7ECF7;--text:#C2CBE4;--soft:#9AA6C6;--panel:#0F162E;--line:rgba(120,150,230,.26);--blue:#6AA4F8;--grad:linear-gradient(135deg,#4D86F0,#7C5CF0);--grad-btn:linear-gradient(135deg,#3A6FD8,#6A4BDE);
